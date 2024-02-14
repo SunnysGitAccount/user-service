@@ -74,4 +74,11 @@ public class UserServiceImpl implements UserService {
         }
         return false;
     }
+
+    @Override
+    public Users validateToken(String token) {
+        Tokens savedToken = tokenRepository.findTokensByTokenValueAndIsDeletedFalse(token);
+
+        return savedToken.getUsers();
+    }
 }

@@ -5,6 +5,7 @@ import com.dev.sunny.userservice.dtos.SignUpRequestDto;
 import com.dev.sunny.userservice.models.Tokens;
 import com.dev.sunny.userservice.models.Users;
 import com.dev.sunny.userservice.services.UserService;
+import lombok.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -50,7 +51,8 @@ public class UserController {
         return new ResponseEntity<>(Map.of("message", "Token Successfully Deleted."), HttpStatus.OK);
     }
 
-    public Users validateToken(String token) {
-        return null;
+    @PostMapping("/validate")
+    public Users validateToken(@NonNull @RequestHeader String token) {
+        return usersService.validateToken(token);
     }
 }

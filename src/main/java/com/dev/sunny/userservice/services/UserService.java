@@ -8,4 +8,6 @@ public interface UserService {
 
     Tokens login(String email, String password);
     boolean deleteToken(String token);
+
+    Users validateToken(String token);
 }
