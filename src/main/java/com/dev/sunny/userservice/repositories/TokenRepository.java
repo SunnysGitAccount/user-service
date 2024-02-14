@@ -10,6 +10,4 @@ public interface TokenRepository extends JpaRepository<Tokens, Long> {
     boolean existsTokensByTokenValueAndIsDeletedFalse(String token);
 
     Tokens findTokensByTokenValueAndIsDeletedFalse(String token);
-
-    Optional<Tokens> findByUsersIdAndExpiryDateAfterAndIsDeletedFalse(Long id, Date from);
 }

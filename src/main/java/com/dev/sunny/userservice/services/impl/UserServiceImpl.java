@@ -49,11 +49,6 @@ public class UserServiceImpl implements UserService {
         if (!bCryptPasswordEncoder.matches(password, user.getHashedPassword()))
             throw new RuntimeException("User password match failed!");
 
-        Optional<Tokens> existingToken = tokenRepository.findByUsersIdAndExpiryDateAfterAndIsDeletedFalse(user.getId(),
-                Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()));
-
-        if (existingToken.isPresent()) return existingToken.get();
-
         Date expiryDate = Date.from(LocalDate.now().plusDays(30)
                 .atStartOfDay(ZoneId.systemDefault())
                 .toInstant());
