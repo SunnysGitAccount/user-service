@@ -14,5 +14,5 @@ public class BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private boolean isDeleted;
+    private boolean deleted;
 }

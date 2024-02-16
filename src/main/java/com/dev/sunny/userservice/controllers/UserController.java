@@ -2,7 +2,8 @@ package com.dev.sunny.userservice.controllers;
 
 import com.dev.sunny.userservice.dtos.LoginRequestDto;
 import com.dev.sunny.userservice.dtos.SignUpRequestDto;
-import com.dev.sunny.userservice.models.Tokens;
+import com.dev.sunny.userservice.dtos.TokenDto;
+import com.dev.sunny.userservice.dtos.UserResponseDto;
 import com.dev.sunny.userservice.models.Users;
 import com.dev.sunny.userservice.services.UserService;
 import lombok.NonNull;
@@ -22,10 +23,12 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public Tokens login(@RequestBody LoginRequestDto loginRequest) {
-        return usersService.login(loginRequest.getEmail(), loginRequest.getPassword());
-    }
+    public TokenDto login(@RequestBody LoginRequestDto loginRequest) {
+        String email = loginRequest.getEmail();
+        String password = loginRequest.getPassword();
 
+        return usersService.login(email, password);
+    }
 
     /**
      * Sign up user, no need for hashing password for now,
@@ -34,7 +37,7 @@ public class UserController {
      * @return Users token with details
      */
     @PostMapping("/signup")
-    public Users signUp(@RequestBody SignUpRequestDto signUpRequest) {
+    public UserResponseDto signUp(@RequestBody SignUpRequestDto signUpRequest) {
         String email = signUpRequest.getEmail();
         String password = signUpRequest.getPassword();
         String name = signUpRequest.getName();
