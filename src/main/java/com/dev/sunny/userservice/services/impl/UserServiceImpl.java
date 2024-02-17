@@ -10,7 +10,9 @@ import com.dev.sunny.userservice.models.Users;
 import com.dev.sunny.userservice.repositories.TokenRepository;
 import com.dev.sunny.userservice.repositories.UserRepository;
 import com.dev.sunny.userservice.services.UserService;
-import org.apache.commons.lang3.RandomStringUtils;
+import com.dev.sunny.userservice.util.JwtUtil;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -67,7 +69,7 @@ public class UserServiceImpl implements UserService {
 
         Tokens tokens = new Tokens();
         tokens.setUsers(user);
-        tokens.setTokenValue(RandomStringUtils.randomAlphanumeric(128));
+        tokens.setTokenValue(JwtUtil.generateToken(user.getEmail(), expiryDate));
         tokens.setExpiryDate(expiryDate);
         return tokens;
     }
@@ -88,7 +90,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Users validateToken(String token) {
-        Tokens savedToken = tokenRepository.findByTokenValueAndDeletedFalseAndExpiryDateAfter(token, new Date());
-        return savedToken.getUsers();
+        Jws<Claims> claims = JwtUtil.validateToken(token);
+        String email = claims.getBody().getSubject();
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
     }
 }
