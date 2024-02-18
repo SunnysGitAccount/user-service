@@ -30,10 +30,10 @@ public class UserController {
     }
 
     /**
-     * Sign up user, no need for hashing password for now,
-     * store as is in DB.
+     * Sign up user, with hashed password logic in service,
+     * store as hashed password in DB.
      * No need to have email verified.
-     * @return Users token with details
+     * @return UserResponseDto and token with limited user details.
      */
     @PostMapping("/signup")
     public UserResponseDto signUp(@RequestBody SignUpRequestDto signUpRequest) {
