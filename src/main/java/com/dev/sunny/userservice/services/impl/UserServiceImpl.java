@@ -89,10 +89,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Users validateToken(String token) {
+    public UserResponseDto validateToken(String token) {
         Jws<Claims> claims = JwtUtil.validateToken(token);
         String email = claims.getBody().getSubject();
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+        return userMapper.usersToUserResponseDto(userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email)));
     }
 }

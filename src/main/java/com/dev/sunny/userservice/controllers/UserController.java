@@ -4,7 +4,6 @@ import com.dev.sunny.userservice.dtos.LoginRequestDto;
 import com.dev.sunny.userservice.dtos.SignUpRequestDto;
 import com.dev.sunny.userservice.dtos.TokenDto;
 import com.dev.sunny.userservice.dtos.UserResponseDto;
-import com.dev.sunny.userservice.models.Users;
 import com.dev.sunny.userservice.services.UserService;
 import lombok.NonNull;
 import org.springframework.http.HttpStatus;
@@ -55,7 +54,7 @@ public class UserController {
     }
 
     @PostMapping("/validate")
-    public Users validateToken(@NonNull @RequestHeader String token) {
+    public UserResponseDto validateToken(@NonNull @RequestHeader String token) {
         return usersService.validateToken(token);
     }
 }
