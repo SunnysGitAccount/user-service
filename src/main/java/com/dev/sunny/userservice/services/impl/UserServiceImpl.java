@@ -1,12 +1,16 @@
 package com.dev.sunny.userservice.services.impl;
 
+import com.dev.sunny.userservice.dtos.RolesDto;
 import com.dev.sunny.userservice.dtos.TokenDto;
 import com.dev.sunny.userservice.dtos.UserRequestDto;
 import com.dev.sunny.userservice.dtos.UserResponseDto;
+import com.dev.sunny.userservice.mappers.RolesMapper;
 import com.dev.sunny.userservice.mappers.TokenMapper;
 import com.dev.sunny.userservice.mappers.UserMapper;
+import com.dev.sunny.userservice.models.Roles;
 import com.dev.sunny.userservice.models.Tokens;
 import com.dev.sunny.userservice.models.Users;
+import com.dev.sunny.userservice.repositories.RolesRepository;
 import com.dev.sunny.userservice.repositories.TokenRepository;
 import com.dev.sunny.userservice.repositories.UserRepository;
 import com.dev.sunny.userservice.services.UserService;
@@ -19,31 +23,45 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
+    private final RolesRepository rolesRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserMapper userMapper;
     private final TokenMapper tokenMapper;
+    private final RolesMapper rolesMapper;
 
-    public UserServiceImpl(UserRepository userRepository, TokenRepository tokenRepository, BCryptPasswordEncoder bCryptPasswordEncoder, UserMapper userMapper, TokenMapper tokenMapper) {
+    public UserServiceImpl(UserRepository userRepository, TokenRepository tokenRepository, RolesRepository rolesRepository, BCryptPasswordEncoder bCryptPasswordEncoder, UserMapper userMapper, TokenMapper tokenMapper, RolesMapper rolesMapper) {
         this.userRepository = userRepository;
         this.tokenRepository = tokenRepository;
+        this.rolesRepository = rolesRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.userMapper = userMapper;
         this.tokenMapper = tokenMapper;
+        this.rolesMapper = rolesMapper;
     }
 
     @Override
     public UserResponseDto register(String name, String email, String password) {
-        Users savedUser = userRepository.save(userMapper.userRequestDtoToUsers(UserRequestDto.builder()
+        Users dtoToUser = userMapper.userRequestDtoToUsers(UserRequestDto.builder()
                 .name(name)
                 .email(email)
                 .password(bCryptPasswordEncoder.encode(password))
-                .build()));
+                .build());
+        Roles role = rolesMapper.rolesDtoToRoles(RolesDto.builder()
+                .name("USER")
+                .build());
+
+        rolesRepository.save(role);
+
+        dtoToUser.setRoles(List.of(role));
+
+        Users savedUser = userRepository.save(dtoToUser);
         return userMapper.usersToUserResponseDto(savedUser);
     }
 

@@ -11,4 +11,10 @@ public class RolesMapper {
                 .name(roles.getName())
                 .build();
     }
+
+    public Roles rolesDtoToRoles(RolesDto user) {
+        Roles roles = new Roles();
+        roles.setName(user.getName());
+        return roles;
+    }
 }
