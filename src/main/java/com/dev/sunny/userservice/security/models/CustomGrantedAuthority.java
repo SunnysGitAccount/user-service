@@ -6,7 +6,9 @@ import org.springframework.security.core.GrantedAuthority;
 
 @JsonDeserialize
 public class CustomGrantedAuthority implements GrantedAuthority {
-    private final String authority;
+    private String authority;
+
+    public CustomGrantedAuthority() {}
 
     public CustomGrantedAuthority(Roles role) {
         this.authority = role.getName();
