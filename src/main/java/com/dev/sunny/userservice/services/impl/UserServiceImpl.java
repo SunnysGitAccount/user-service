@@ -109,7 +109,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto validateToken(String token) {
         Jws<Claims> claims = JwtUtil.validateToken(token);
-        String email = claims.getBody().getSubject();
+        String email = claims.getPayload().getSubject();
         return userMapper.usersToUserResponseDto(userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + email)));
     }

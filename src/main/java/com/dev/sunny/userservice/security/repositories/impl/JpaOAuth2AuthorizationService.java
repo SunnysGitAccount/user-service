@@ -3,6 +3,7 @@ package com.dev.sunny.userservice.security.repositories.impl;
 import com.dev.sunny.userservice.security.models.Authorization;
 import com.dev.sunny.userservice.security.repositories.AuthorizationRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.dao.DataRetrievalFailureException;
@@ -42,6 +43,8 @@ public class JpaOAuth2AuthorizationService implements OAuth2AuthorizationService
 
         ClassLoader classLoader = JpaOAuth2AuthorizationService.class.getClassLoader();
         List<Module> securityModules = SecurityJackson2Modules.getModules(classLoader);
+
+        this.objectMapper.disable(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE);
         this.objectMapper.registerModules(securityModules);
         this.objectMapper.registerModule(new OAuth2AuthorizationServerJackson2Module());
     }
@@ -259,7 +262,7 @@ public class JpaOAuth2AuthorizationService implements OAuth2AuthorizationService
 
     private Map<String, Object> parseMap(String data) {
         try {
-            return this.objectMapper.readValue(data, new TypeReference<Map<String, Object>>() {
+            return this.objectMapper.readValue(data, new TypeReference<>() {
             });
         } catch (Exception ex) {
             throw new IllegalArgumentException(ex.getMessage(), ex);

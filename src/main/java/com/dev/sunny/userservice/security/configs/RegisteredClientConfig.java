@@ -39,11 +39,12 @@ public class RegisteredClientConfig {
                     .scope("write")
                     .scope(OidcScopes.OPENID)
                     .scope(OidcScopes.PROFILE)
+                    .scope("USER")
                     .clientSettings(ClientSettings.builder()
                             .requireAuthorizationConsent(true)
                             .build())
                     .clientIdIssuedAt(Instant.now())
-                    .clientSecretExpiresAt(Instant.now().plusSeconds(3600))
+                    .clientSecretExpiresAt(Instant.now().plusSeconds(3600 * 24))
                     .build();
 
             clientRepository.save(registeredClient);

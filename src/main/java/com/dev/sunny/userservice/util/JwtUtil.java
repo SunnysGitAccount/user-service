@@ -4,7 +4,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
-import java.security.Key;
+import javax.crypto.SecretKey;
 import java.util.Date;
 
 public class JwtUtil {
@@ -12,24 +12,24 @@ public class JwtUtil {
 
     public static String generateToken(String email, Date expiryDate) {
         return Jwts.builder()
-                .setSubject(email)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(expiryDate)
-                .signWith(decodedKey(), SignatureAlgorithm.HS256)
+                .subject(email)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(expiryDate)
+                .signWith(decodedKey())
                 .compact();
     }
 
-    private static Key decodedKey() {
+    private static SecretKey decodedKey() {
         byte[] keySeq = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keySeq);
     }
 
     public static Jws<Claims> validateToken(String token) {
         try {
-            return Jwts.parserBuilder()
-                    .setSigningKey(decodedKey())
+            return Jwts.parser()
+                    .decryptWith(decodedKey())
                     .build()
-                    .parseClaimsJws(token);
+                    .parseSignedClaims(token);
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             throw new IllegalArgumentException("Invalid token");
         } catch (ExpiredJwtException e) {
