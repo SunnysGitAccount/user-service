@@ -10,7 +10,9 @@ import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
+import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 
+import java.time.Duration;
 import java.time.Instant;
 
 @Configuration
@@ -45,6 +47,9 @@ public class RegisteredClientConfig {
                             .build())
                     .clientIdIssuedAt(Instant.now())
                     .clientSecretExpiresAt(Instant.now().plusSeconds(3600 * 24))
+                    .tokenSettings(TokenSettings.builder()
+                            .accessTokenTimeToLive(Duration.ofHours(1))
+                            .build())
                     .build();
 
             clientRepository.save(registeredClient);
